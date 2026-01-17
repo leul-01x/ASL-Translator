@@ -7,16 +7,11 @@ DATA_DIR = './data'
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
-letters = ['A', 'B', 'C', 'D']  
-dataset_size = 500              
-
+letters = [chr(i) for i in range(ord('A'), ord('Z')+1)]
+dataset_size = 500
 
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(
-    static_image_mode=False,
-    max_num_hands=1,
-    min_detection_confidence=0.7
-)
+hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_confidence=0.7)
 mp_draw = mp.solutions.drawing_utils
 
 cap = cv2.VideoCapture(0)
@@ -37,9 +32,10 @@ for idx, letter in enumerate(letters):
         cv2.putText(frame, f'Get ready for {letter}. Press C!', (50, 50),
                     cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
         cv2.imshow('frame', frame)
-        if cv2.waitKey(25) & 0xFF == ord('c'):
+        key = cv2.waitKey(25) & 0xFF
+        if key == ord('c'):
             break
-        if cv2.waitKey(25) & 0xFF == ord('q'):
+        if key == ord('q'):
             print('Quitting early...')
             cap.release()
             cv2.destroyAllWindows()
@@ -77,13 +73,13 @@ for idx, letter in enumerate(letters):
                         cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
 
         cv2.imshow('frame', frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
             print('Quitting early...')
             cap.release()
             cv2.destroyAllWindows()
             hands.close()
             exit()
-
 
 cap.release()
 cv2.destroyAllWindows()
