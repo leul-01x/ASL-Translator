@@ -8,10 +8,9 @@ df_a = pd.read_csv('./data/A.csv')
 df_b = pd.read_csv('./data/B.csv')  
 df_c = pd.read_csv('./data/C.csv')  
 df_d = pd.read_csv('./data/D.csv')  
-df_e = pd.read_csv('./data/E.csv')  
 
 
-data = pd.concat([df_a, df_b, df_c, df_d, df_e], ignore_index=True)
+data = pd.concat([df_a, df_b, df_c, df_d], ignore_index=True)
 
 X = data.iloc[:, :-1]  
 y = data.iloc[:, -1]   
