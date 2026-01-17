@@ -7,11 +7,15 @@ DATA_DIR = './data'
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
-letters = [chr(i) for i in range(ord('A'), ord('Z')+1)]
-dataset_size = 500
+letters = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
+dataset_size = 2000  
 
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_confidence=0.7)
+hands = mp_hands.Hands(
+    static_image_mode=False,
+    max_num_hands=1,
+    min_detection_confidence=0.7
+)
 mp_draw = mp.solutions.drawing_utils
 
 cap = cv2.VideoCapture(0)
@@ -29,6 +33,8 @@ for idx, letter in enumerate(letters):
 
     while True:
         ret, frame = cap.read()
+        if not ret:
+            continue
         cv2.putText(frame, f'Get ready for {letter}. Press C!', (50, 50),
                     cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
         cv2.imshow('frame', frame)
@@ -64,15 +70,16 @@ for idx, letter in enumerate(letters):
                 cx, cy = int(lm.x * w), int(lm.y * h)
                 cv2.putText(frame, f'{i}', (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
 
-            with open(os.path.join(DATA_DIR, f'class_{idx}.csv'), 'a', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(landmarks + [idx])
+            if len(landmarks) == 63:
+                with open(os.path.join(DATA_DIR, f'class_{idx}.csv'), 'a', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(landmarks + [idx])
+                counter += 1
 
-            counter += 1
-            cv2.putText(frame, f'Collected: {counter}/{dataset_size}', (50, 80),
-                        cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
+        cv2.putText(frame, f'Letter: {letter}  Collected: {counter}/{dataset_size}', (50, 80),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
 
-        cv2.imshow('frame', frame)
+        cv2.imshow('ASL Live Collection', frame)
         key = cv2.waitKey(1) & 0xFF
         if key == ord('q'):
             print('Quitting early...')
