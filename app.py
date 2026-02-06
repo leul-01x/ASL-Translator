@@ -4,11 +4,7 @@ import pandas as pd
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 import os
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> d7f3cf48a68f1f08d2b58d7372bee91e6d1df695
 DATA_DIR = './data'
 letters = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
 
@@ -72,8 +68,8 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-<<<<<<< HEAD
+
 hands.close()
-=======
+
 hands.close()
->>>>>>> d7f3cf48a68f1f08d2b58d7372bee91e6d1df695
+
