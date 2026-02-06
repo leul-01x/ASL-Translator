@@ -44,8 +44,7 @@ clf = KNeighborsClassifier(n_neighbors=3)
 clf.fit(X_train, y_train)
 
 accuracy = clf.score(X_test, y_test)
-<<<<<<< HEAD
+
 print(f"Model accuracy on test data: {accuracy*100:.2f}%")
-=======
+
 print(f"Model accuracy on test data: {accuracy*100:.2f}%")
->>>>>>> d7f3cf48a68f1f08d2b58d7372bee91e6d1df695
