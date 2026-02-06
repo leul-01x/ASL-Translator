@@ -48,3 +48,6 @@ accuracy = clf.score(X_test, y_test)
 print(f"Model accuracy on test data: {accuracy*100:.2f}%")
 
 print(f"Model accuracy on test data: {accuracy*100:.2f}%")
+
+
+#using this as an execuse to re name commit -m
