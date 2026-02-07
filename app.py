@@ -5,7 +5,6 @@ import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 import os
 
-# ------------------ LOAD DATA & TRAIN MODEL ------------------
 DATA_DIR = './data'
 letters = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
 
@@ -29,7 +28,6 @@ y = data.iloc[:, -1]
 clf = KNeighborsClassifier(n_neighbors=3)
 clf.fit(X, y)
 
-# ------------------ MEDIAPIPE & CAMERA ------------------
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_confidence=0.7)
 mp_draw = mp.solutions.drawing_utils
@@ -41,9 +39,8 @@ if not cap.isOpened():
 
 label_map = {i: letters[i] for i in range(len(letters))}
 
-# ------------------ BUFFERS ------------------
 current_word = ""
-current_detected = ""          # persists until new letter is seen
+current_detected = ""
 
 while True:
     ret, frame = cap.read()
@@ -66,29 +63,33 @@ while True:
         if len(landmarks) == 63:
             landmarks_np = np.array(landmarks).reshape(1, -1)
             prediction = clf.predict(landmarks_np)[0]
-            current_detected = label_map[int(prediction)]   # update only when hand is seen
+            current_detected = label_map[int(prediction)]
 
-    # ------------------ DISPLAY ------------------
-    display_text = f"Detected: {current_detected} | Word: {current_word}"
+    display_text = f"Detected: {current_detected} | Word/Sentence: {current_word}"
     cv2.putText(frame, display_text, (50, 100),
                 cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 3)
 
     cv2.imshow('ASL Translator - MVP', frame)
 
-    # ------------------ KEY HANDLING ------------------
     key = cv2.waitKey(1) & 0xFF
 
-    if key == 13:                    # ENTER → add the currently detected letter to the word
+    if key == 13:                    # ENTER → add detected letter
         if current_detected:
             current_word += current_detected
 
-    elif key == ord('c'):            # C → clear the word (optional but very useful)
+    elif key == ord(' '):            # SPACE → add space
+        current_word += " "
+
+    elif key == 8:                   # BACKSPACE (delete last char)
+        if current_word:
+            current_word = current_word[:-1]
+
+    elif key == ord('c'):            # C → clear word
         current_word = ""
 
-    elif key == ord('q'):            # Q → quit
+    elif key == ord('q'):
         break
 
-# ------------------ CLEANUP ------------------
 cap.release()
 cv2.destroyAllWindows()
 hands.close()
